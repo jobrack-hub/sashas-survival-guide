@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sasha's Survival Guide to Being Alive</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Caveat:wght@600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-section: #111111;
+      --bg-card: #1a1a1a;
+      --accent: #e84393;
+      --accent2: #6c5ce7;
+      --accent3: #00cec9;
+      --text: #f0f0f0;
+      --text-dim: #888;
+      --danger: #ff6b6b;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ===== CONFETTI CANVAS ===== */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ===== LANDING / HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(232,67,147,0.15) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      border-radius: 50%;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(108,92,231,0.1) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+      border-radius: 50%;
+      animation: pulse-glow 5s ease-in-out infinite reverse;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.3s;
+    }
+
+    .hero-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.6s;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      max-width: 500px;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.9s;
+    }
+
+    .hero-enter {
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-enter:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(232,67,147,0.4);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateY(-100%);
+      transition: transform 0.4s ease;
+      flex-wrap: wrap;
+    }
+
+    .nav.visible { transform: translateY(0); }
+
+    .nav a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav a:hover { color: var(--accent); }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      min-height: 100vh;
+      padding: 6rem 2rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+      color: var(--text-dim);
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 0.95rem;
+    }
+
+    /* ===== EMERGENCY BUTTON ===== */
+    #emergency { background: var(--bg-dark); }
+
+    .emergency-btn {
+      width: clamp(200px, 40vw, 300px);
+      height: clamp(200px, 40vw, 300px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff4757, #c0392b);
+      border: 6px solid #e74c3c;
+      color: white;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 60px rgba(231,76,60,0.3), inset 0 -4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      margin: 2rem 0;
+    }
+
+    .emergency-btn::after {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      border: 2px dashed var(--danger);
+      opacity: 0.3;
+      animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .emergency-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 80px rgba(231,76,60,0.5), inset 0 -4px 10px rgba(0,0,0,0.3);
+    }
+
+    .emergency-btn:active { transform: scale(0.95); }
+
+    .emergency-output {
+      max-width: 600px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emergency-text {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      line-height: 1.5;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .emergency-text.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ===== RATE YOUR DAY ===== */
+    #rate { background: var(--bg-section); }
+
+    .rate-scale {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .rate-btn {
+      padding: 0.8rem 1.2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      background: var(--bg-card);
+      color: var(--text);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rate-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .rate-btn.selected {
+      border-color: var(--accent);
+      background: rgba(232,67,147,0.15);
+    }
+
+    .rate-response {
+      max-width: 500px;
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 16px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .rate-response.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .rate-response p { font-size: 1.1rem; line-height: 1.6; }
+
+    /* ===== REASONS LIST ===== */
+    #reasons { background: var(--bg-dark); }
+
+    .reasons-container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .reason-item {
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 0.75rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border-left: 4px solid var(--accent2);
+      font-size: 1.05rem;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.4s, transform 0.4s, background 0.2s;
+      cursor: default;
+    }
+
+    .reason-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reason-item:hover {
+      background: #222;
+    }
+
+    .reason-item .reason-number {
+      color: var(--accent2);
+      font-weight: 700;
+      margin-right: 0.75rem;
+    }
+
+    .reasons-more {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .reasons-more button {
+      padding: 0.8rem 2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      background: transparent;
+      color: var(--accent2);
+      border: 2px solid var(--accent2);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reasons-more button:hover {
+      background: var(--accent2);
+      color: white;
+    }
+
+    /* ===== WALL OF SHAME ===== */
+    #wall { background: var(--bg-section); }
+
+    .wall-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .wall-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .wall-card:hover { transform: rotate(-1deg) scale(1.02); }
+    .wall-card:nth-child(even):hover { transform: rotate(1deg) scale(1.02); }
+
+    .wall-card-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .wall-card-body {
+      padding: 1.2rem;
+    }
+
+    .wall-card-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .wall-card-desc {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* ===== WHEEL OF COPING ===== */
+    #wheel { background: var(--bg-dark); }
+
+    .wheel-container {
+      position: relative;
+      margin: 2rem 0;
+    }
+
+    .wheel-canvas {
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      border: 4px solid var(--accent3);
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      box-shadow: 0 0 40px rgba(0,206,201,0.2);
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid var(--accent3);
+      z-index: 2;
+      filter: drop-shadow(0 0 6px rgba(0,206,201,0.5));
+    }
+
+    .wheel-spin-btn {
+      margin-top: 1.5rem;
+      padding: 1rem 3rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent3), #00b894);
+      color: var(--bg-dark);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .wheel-spin-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0,206,201,0.3);
+    }
+
+    .wheel-spin-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .wheel-result {
+      margin-top: 2rem;
+      padding: 1.5rem 2rem;
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 2px solid var(--accent3);
+      max-width: 400px;
+      text-align: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .wheel-result.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ===== DAILY FORTUNE ===== */
+    #fortune { background: var(--bg-section); }
+
+    .fortune-cookie {
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+      margin: 2rem 0;
+    }
+
+    .fortune-cookie:hover { transform: scale(1.1) rotate(5deg); }
+
+    .fortune-cookie-visual {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #f0c27f, #c9920a);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      box-shadow: 0 10px 30px rgba(201,146,10,0.3);
+      transition: transform 0.3s;
+    }
+
+    .fortune-cookie.cracked .fortune-cookie-visual {
+      animation: crack 0.5s ease forwards;
+    }
+
+    @keyframes crack {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2) rotate(10deg); }
+      100% { transform: scale(0.8) rotate(-5deg); opacity: 0.5; }
+    }
+
+    .fortune-slip {
+      max-width: 500px;
+      text-align: center;
+      padding: 2rem;
+      background: #fffef0;
+      color: #333;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s, transform 0.5s;
+      position: relative;
+    }
+
+    .fortune-slip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fortune-slip::before {
+      content: '"';
+      position: absolute;
+      top: 5px;
+      left: 15px;
+      font-size: 3rem;
+      color: rgba(0,0,0,0.1);
+      font-family: serif;
+    }
+
+    .fortune-new {
+      margin-top: 1.5rem;
+      padding: 0.7rem 2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .fortune-new:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      border-top: 1px solid #222;
+    }
+
+    .footer .heart { color: var(--accent); }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== SCREEN SHAKE ===== */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10% { transform: translateX(-10px) rotate(-1deg); }
+      30% { transform: translateX(10px) rotate(1deg); }
+      50% { transform: translateX(-10px) rotate(-0.5deg); }
+      70% { transform: translateX(10px) rotate(0.5deg); }
+      90% { transform: translateX(-5px); }
+    }
+
+    .shake { animation: shake 0.5s ease; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 600px) {
+      .nav { gap: 0.8rem; padding: 0.8rem 1rem; }
+      .nav a { font-size: 0.7rem; letter-spacing: 0; }
+      .section { padding: 5rem 1.2rem 3rem; }
+      .wall-grid { grid-template-columns: 1fr; }
+      .wheel-canvas { width: 260px; height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#emergency">Emergency</a>
+  <a href="#rate">Rate Your Day</a>
+  <a href="#reasons">Reasons</a>
+  <a href="#wall">Wall of Shame</a>
+  <a href="#wheel">Coping Wheel</a>
+  <a href="#fortune">Fortune</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <p class="hero-subtitle">A completely unnecessary website</p>
+  <h1 class="hero-title"><span>Sasha's Survival Guide</span><br>to Being Alive</h1>
+  <p class="hero-tagline">You didn't ask for this. But here it is anyway. Just like life.</p>
+  <button class="hero-enter" id="enter-btn">Enter If You Dare</button>
+</section>
+
+<!-- EMERGENCY BUTTON -->
+<section class="section" id="emergency">
+  <h2 class="section-title fade-in">The Emergency Button</h2>
+  <p class="section-subtitle fade-in">For when you need an aggressive pep talk. Hit it.</p>
+  <button class="emergency-btn" id="emergency-btn">PRESS<br>ME</button>
+  <div class="emergency-output">
+    <p class="emergency-text" id="emergency-text"></p>
+  </div>
+</section>
+
+<!-- RATE YOUR DAY -->
+<section class="section" id="rate">
+  <h2 class="section-title fade-in">Rate Your Day</h2>
+  <p class="section-subtitle fade-in">Be honest. We won't judge. (We will a little.)</p>
+  <div class="rate-scale" id="rate-scale">
+    <button class="rate-btn" data-rating="0">Absolute Dumpster Fire</button>
+    <button class="rate-btn" data-rating="1">Barely Survived</button>
+    <button class="rate-btn" data-rating="2">Meh</button>
+    <button class="rate-btn" data-rating="3">Surprisingly Okay</button>
+    <button class="rate-btn" data-rating="4">Actually Good??</button>
+  </div>
+  <div class="rate-response" id="rate-response">
+    <p id="rate-response-text"></p>
+  </div>
+</section>
+
+<!-- REASONS -->
+<section class="section" id="reasons">
+  <h2 class="section-title fade-in">Reasons Not to Unalive Your Vibe</h2>
+  <p class="section-subtitle fade-in">A scientifically unverified but emotionally accurate list</p>
+  <div class="reasons-container" id="reasons-list"></div>
+  <div class="reasons-more">
+    <button id="more-reasons-btn">Give Me More Reasons</button>
+  </div>
+</section>
+
+<!-- WALL OF SHAME -->
+<section class="section" id="wall">
+  <h2 class="section-title fade-in">The Wall of Shame</h2>
+  <p class="section-subtitle fade-in">Memories that should have been deleted but weren't</p>
+  <div class="wall-grid" id="wall-grid"></div>
+</section>
+
+<!-- WHEEL OF COPING -->
+<section class="section" id="wheel">
+  <h2 class="section-title fade-in">Wheel of Coping</h2>
+  <p class="section-subtitle fade-in">Let fate decide your next terrible decision</p>
+  <div class="wheel-container">
+    <div class="wheel-pointer"></div>
+    <canvas class="wheel-canvas" id="wheel-canvas" width="320" height="320"></canvas>
+  </div>
+  <button class="wheel-spin-btn" id="spin-btn">SPIN THE WHEEL</button>
+  <div class="wheel-result" id="wheel-result"></div>
+</section>
+
+<!-- DAILY FORTUNE -->
+<section class="section" id="fortune">
+  <h2 class="section-title fade-in">Daily Dark Fortune</h2>
+  <p class="section-subtitle fade-in">Crack open a cookie. It might be wisdom. It might be chaos.</p>
+  <div class="fortune-cookie" id="fortune-cookie">
+    <div class="fortune-cookie-visual">🥠</div>
+  </div>
+  <div class="fortune-slip" id="fortune-slip"></div>
+  <button class="fortune-new" id="fortune-new" style="display:none;">Crack Another One</button>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Made with <span class="heart">♥</span> and questionable humor by someone who actually cares about you, Sasha.</p>
+  <p style="margin-top: 0.5rem; font-size: 0.75rem;">If you're actually struggling, text/call 988 (Suicide & Crisis Lifeline) — they're real ones.</p>
+</footer>
+
+<script>
+// ============================================
+// DATA
+// ============================================
+
+const emergencyMessages = [
+  "Sasha. SASHA. You absolute legend. You got out of bed today and that's basically an Olympic sport. 🏅",
+  "Listen. The universe spent 13.8 billion years making you. That's a LOT of effort for you to just give up now.",
+  "You're not a mess. You're a LIMITED EDITION disaster. There's a difference.",
+  "Plot twist: you're the main character. The sad montage is almost over. The glow-up scene is LOADING.",
+  "Your future self is looking back at this moment thinking 'damn, she really pulled through though.' Don't let future Sasha down.",
+  "You know what? The fact that you're still here after everything? That's not weakness. That's SPITE. And spite is a perfectly valid fuel source.",
+  "Hey. You're allowed to have a terrible day. Even Batman had bad days and he's literally a billionaire with abs.",
+  "Sasha. My girl. The bar was on the floor and you STILL showed up. That's called excellence.",
+  "You are someone's reason to smile. You're also someone's reason to roll their eyes but we're focusing on the first one today.",
+  "Fun fact: you've survived 100% of your worst days so far. That's an undefeated record. Don't break the streak.",
+  "The trash takes itself out eventually. You just gotta outlast it. And you WILL because you're petty like that.",
+  "You're doing amazing sweetie. And by amazing I mean you're alive and that's genuinely incredible given... *gestures at everything*",
+  "Reminder: you don't have to have it all together. You just have to not fall completely apart. And look at you — NAILING IT.",
+  "Sasha, you beautiful disaster. The world is objectively terrible but at least you exist in it, and that makes it slightly less terrible.",
+  "You think you're falling apart? Nah. You're under construction. Big difference. Same mess, better narrative.",
+];
+
+const rateResponses = {
+  0: [
+    "A dumpster fire day? Noted. Good news: dumpster fires eventually burn out. And tomorrow is a fresh dumpster. 🗑️🔥",
+    "Absolute garbage day, huh? Well, you made it through. That's basically a flex at this point.",
+    "Today was trash but YOU are not trash. You're the person who survived the trash. That's basically a superhero origin story.",
+  ],
+  1: [
+    "Barely survived? That's still survived though. Participation trophy energy and honestly? We respect it. 🏆",
+    "You dragged yourself through today like a warrior. A tired, slightly unhinged warrior. But still a warrior.",
+    "Surviving is enough. Not every day needs to be a masterpiece. Some days the art is just... not dying.",
+  ],
+  2: [
+    "Meh is honestly underrated. Meh means nothing terrible happened. Meh is peaceful. Meh is a WIN, Sasha.",
+    "A solid 'meh' — you're in the neutral zone. Not great, not awful. You're basically Switzerland today. 🇨🇭",
+    "Meh days are the backbone of existence. Can't appreciate the good days without a foundation of pure meh.",
+  ],
+  3: [
+    "SURPRISINGLY OKAY?! Sasha!! That's growth! That's progress! That's— okay I'll calm down but STILL. 🎉",
+    "Wait wait wait — you're telling me today was... okay? Like ACTUALLY okay? Quick, write this down. Mark the calendar.",
+    "Surprisingly okay is honestly beautiful. It means good things can still sneak up on you. Stay ready.",
+  ],
+  4: [
+    "ACTUALLY GOOD?! WHO ARE YOU AND WHAT HAVE YOU DONE WITH SASHA?! 🎊🎊🎊 No but seriously — you deserve this. Soak it in.",
+    "A GOOD day?? The simulation is glitching in your favor! Quick — buy a lottery ticket or something!",
+    "Okay this is genuinely wonderful. You had a good day. You DESERVE good days. More of these please. The universe owes you.",
+  ],
+};
+
+const reasons = [
+  "Your cat/dog/plant would genuinely not understand where you went",
+  "You haven't tried every flavour of ice cream yet and that's unfinished business",
+  "Somewhere out there, your nemesis is having a GREAT day and you can't let them win",
+  "The next season of your favourite show hasn't aired yet",
+  "You still haven't found out what your purpose is — what if it's something absolutely ridiculous?",
+  "Pizza exists. That's it. That's the reason.",
+  "There's a random stranger out there who still thinks about that nice thing you did that one time",
+  "You haven't seen every sunset yet and some of them are annoyingly beautiful",
+  "Spite is a valid reason to keep going and we both know you're petty enough",
+  "The playlist you made last week? Someone needs to hear it. That someone is future you.",
+  "You're part of someone's core memory and they'd be wrecked without you",
+  "There are dogs you haven't pet yet. DOGS, Sasha. Think of the pick me dogs.",
+  "Your glow-up era is still loading. Don't close the browser.",
+  "You haven't eaten Stamba pistachio cake yet that's going to absolutely change your life yet",
+  "Somewhere in the multiverse there's a version of you that's thriving. You owe it to her to catch up.",
+  "The people who doubted you haven't been proven wrong yet. UNACCEPTABLE.",
+  "There's a cozy bed waiting for you tonight and it's genuinely excited to see you",
+  "New human music drops every Friday. That's 52 reasons a year right there.",
+  "Autumn exists. Crunchy leaves. Oversized sweaters. Hot drinks. I rest my case.",
+  "You do not even have Spotify yet",
+  "Because I'd miss you, obviously. Don't make this weird.",
+];
+
+const wallCards = [
+  { img: "electric-pot.jpg", title: "The Electric Pot Incident", desc: "She had an electric pot. ELECTRIC. And she put it on the stove. On FIRE. To boil water. The pot was already electric, Sasha. It boils water BY ITSELF. Engineering was not engineered for this moment." },
+  { img: "seashell-stare.png", title: "The Seashell Vision Board", desc: "\"I just wanna strip down to my underwear, sit on a little stool, and intensely stare at a seashell.\" No context. No explanation. Just pure, unfiltered Sasha energy. Honestly? Goals." },
+];
+
+const copingOptions = [
+  { label: "Watch Trash TV", color: "#e84393" },
+  { label: "Eat Something\nUnhinged", color: "#6c5ce7" },
+  { label: "Scream Into\na Pillow", color: "#00cec9" },
+  { label: "Take a\nDesperation Nap", color: "#fdcb6e" },
+  { label: "Text Someone\nSomething Chaotic", color: "#e17055" },
+  { label: "Go Outside\n(Revolutionary)", color: "#55efc4" },
+  { label: "Put On That\nOne Song", color: "#fab1a0" },
+  { label: "Do Absolutely\nNothing (Valid)", color: "#a29bfe" },
+];
+
+const fortunes = [
+  "A nap is not the answer to your problems. But it's also not NOT the answer.",
+  "You will receive an unexpected compliment this week. You will not believe it. Believe it anyway.",
+  "The thing you're overthinking? It's not that deep. It's actually very shallow. Like a puddle. Step over it.",
+  "Mercury is in retrograde. Or maybe you just made a questionable decision. Either way, blame the planets.",
+  "You will find money in a jacket pocket this week. It will be a disappointing amount but it's the thought that counts.",
+  "Someone is thinking about you right now. It might be a debt collector but SOMEONE is thinking about you.",
+  "Your comfort show will hit different tonight. Let it.",
+  "The algorithm knows you too well. Clear your watch history. Reclaim your mystery.",
+  "A stranger will make you smile this week. Not in a creepy way. In a nice way. Probably.",
+  "Your next impulse purchase will be either the best or worst decision of the month. No in-between.",
+  "You are about to enter your 'main character walking in the rain' era. Bring an umbrella.",
+  "Today's fortune: literally just go drink some water. When was the last time you hydrated? Exactly.",
+  "Something you thought was ruined will turn out to be okay. Not perfect — but okay is enough.",
+  "A chaotic text will arrive in your DMs. Respond with an emoji. Any emoji. See what happens.",
+  "You will have a moment of unexpected joy this week. Don't question it. Just let it happen.",
+  "The thing keeping you up at night won't matter in a year. But sleep matters NOW. Go to bed, Sasha.",
+];
+
+// ============================================
+// CONFETTI SYSTEM
+// ============================================
+const confettiCanvas = document.getElementById('confetti-canvas');
+const confettiCtx = confettiCanvas.getContext('2d');
+let confettiPieces = [];
+let confettiRunning = false;
+
+function resizeConfetti() {
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+resizeConfetti();
+window.addEventListener('resize', resizeConfetti);
+
+function launchConfetti(count = 80) {
+  for (let i = 0; i < count; i++) {
+    confettiPieces.push({
+      x: Math.random() * confettiCanvas.width,
+      y: -20 - Math.random() * 100,
+      w: 6 + Math.random() * 6,
+      h: 4 + Math.random() * 4,
+      color: ['#e84393','#6c5ce7','#00cec9','#fdcb6e','#ff6b6b','#55efc4','#fab1a0','#a29bfe'][Math.floor(Math.random()*8)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: 2 + Math.random() * 3,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - 0.5) * 10,
+      life: 1,
+    });
+  }
+  if (!confettiRunning) {
+    confettiRunning = true;
+    animateConfetti();
+  }
+}
+
+function animateConfetti() {
+  confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  confettiPieces.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.05;
+    p.rot += p.rotV;
+    p.life -= 0.003;
+    confettiCtx.save();
+    confettiCtx.translate(p.x, p.y);
+    confettiCtx.rotate(p.rot * Math.PI / 180);
+    confettiCtx.globalAlpha = Math.max(0, p.life);
+    confettiCtx.fillStyle = p.color;
+    confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    confettiCtx.restore();
+  });
+  confettiPieces = confettiPieces.filter(p => p.life > 0 && p.y < confettiCanvas.height + 50);
+  if (confettiPieces.length > 0) {
+    requestAnimationFrame(animateConfetti);
+  } else {
+    confettiRunning = false;
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+}
+
+// ============================================
+// HERO / ENTER
+// ============================================
+const enterBtn = document.getElementById('enter-btn');
+const nav = document.getElementById('nav');
+
+enterBtn.addEventListener('click', () => {
+  launchConfetti(120);
+  document.getElementById('emergency').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => nav.classList.add('visible'), 800);
+});
+
+// Show nav on scroll past hero
+window.addEventListener('scroll', () => {
+  if (window.scrollY > window.innerHeight * 0.5) {
+    nav.classList.add('visible');
+  }
+});
+
+// ============================================
+// EMERGENCY BUTTON
+// ============================================
+const emergencyBtn = document.getElementById('emergency-btn');
+const emergencyText = document.getElementById('emergency-text');
+let lastEmergencyIdx = -1;
+
+emergencyBtn.addEventListener('click', () => {
+  document.body.classList.add('shake');
+  setTimeout(() => document.body.classList.remove('shake'), 500);
+
+  let idx;
+  do { idx = Math.floor(Math.random() * emergencyMessages.length); } while (idx === lastEmergencyIdx);
+  lastEmergencyIdx = idx;
+
+  emergencyText.classList.remove('visible');
+  setTimeout(() => {
+    emergencyText.textContent = emergencyMessages[idx];
+    emergencyText.classList.add('visible');
+  }, 200);
+
+  launchConfetti(40);
+});
+
+// ============================================
+// RATE YOUR DAY
+// ============================================
+const rateButtons = document.querySelectorAll('.rate-btn');
+const rateResponse = document.getElementById('rate-response');
+const rateResponseText = document.getElementById('rate-response-text');
+
+rateButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    rateButtons.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const rating = parseInt(btn.dataset.rating);
+    const responses = rateResponses[rating];
+    const text = responses[Math.floor(Math.random() * responses.length)];
+
+    rateResponse.classList.remove('visible');
+    setTimeout(() => {
+      rateResponseText.textContent = text;
+      rateResponse.classList.add('visible');
+    }, 200);
+
+    if (rating >= 3) launchConfetti(60);
+  });
+});
+
+// ============================================
+// REASONS LIST
+// ============================================
+const reasonsList = document.getElementById('reasons-list');
+const moreReasonsBtn = document.getElementById('more-reasons-btn');
+let reasonsShown = 0;
+const REASONS_PER_BATCH = 5;
+let shuffledReasons = [...reasons].sort(() => Math.random() - 0.5);
+
+function showReasons(count) {
+  const start = reasonsShown;
+  const end = Math.min(start + count, shuffledReasons.length);
+
+  for (let i = start; i < end; i++) {
+    const div = document.createElement('div');
+    div.className = 'reason-item';
+    div.innerHTML = `<span class="reason-number">#${i + 1}</span>${shuffledReasons[i]}`;
+    reasonsList.appendChild(div);
+    setTimeout(() => div.classList.add('visible'), (i - start) * 150);
+  }
+  reasonsShown = end;
+
+  if (reasonsShown >= shuffledReasons.length) {
+    moreReasonsBtn.textContent = "That's all — but honestly, YOU are the reason 💜";
+    moreReasonsBtn.disabled = true;
+    moreReasonsBtn.style.opacity = '0.6';
+  }
+}
+
+showReasons(REASONS_PER_BATCH);
+
+moreReasonsBtn.addEventListener('click', () => {
+  showReasons(REASONS_PER_BATCH);
+});
+
+// ============================================
+// WALL OF SHAME
+// ============================================
+const wallGrid = document.getElementById('wall-grid');
+
+wallCards.forEach(card => {
+  const div = document.createElement('div');
+  div.className = 'wall-card';
+  div.innerHTML = `
+    <img class="wall-card-img" src="${card.img}" alt="${card.title}">
+    <div class="wall-card-body">
+      <p class="wall-card-title">${card.title}</p>
+      <p class="wall-card-desc">${card.desc}</p>
+    </div>
+  `;
+  wallGrid.appendChild(div);
+});
+
+// ============================================
+// WHEEL OF COPING
+// ============================================
+const wheelCanvas = document.getElementById('wheel-canvas');
+const wheelCtx = wheelCanvas.getContext('2d');
+const spinBtn = document.getElementById('spin-btn');
+const wheelResult = document.getElementById('wheel-result');
+let currentAngle = 0;
+let spinning = false;
+
+function drawWheel() {
+  const cx = 160, cy = 160, r = 150;
+  const sliceAngle = (2 * Math.PI) / copingOptions.length;
+
+  wheelCtx.clearRect(0, 0, 320, 320);
+
+  copingOptions.forEach((opt, i) => {
+    const startA = currentAngle + i * sliceAngle;
+    const endA = startA + sliceAngle;
+
+    // Slice
+    wheelCtx.beginPath();
+    wheelCtx.moveTo(cx, cy);
+    wheelCtx.arc(cx, cy, r, startA, endA);
+    wheelCtx.closePath();
+    wheelCtx.fillStyle = opt.color;
+    wheelCtx.fill();
+    wheelCtx.strokeStyle = '#0a0a0a';
+    wheelCtx.lineWidth = 2;
+    wheelCtx.stroke();
+
+    // Text
+    wheelCtx.save();
+    wheelCtx.translate(cx, cy);
+    wheelCtx.rotate(startA + sliceAngle / 2);
+    wheelCtx.fillStyle = '#000';
+    wheelCtx.font = 'bold 11px Space Grotesk, sans-serif';
+    wheelCtx.textAlign = 'center';
+    const lines = opt.label.split('\n');
+    lines.forEach((line, li) => {
+      wheelCtx.fillText(line, r * 0.6, 4 + (li - (lines.length-1)/2) * 13);
+    });
+    wheelCtx.restore();
+  });
+
+  // Center circle
+  wheelCtx.beginPath();
+  wheelCtx.arc(cx, cy, 20, 0, 2 * Math.PI);
+  wheelCtx.fillStyle = '#0a0a0a';
+  wheelCtx.fill();
+  wheelCtx.strokeStyle = '#333';
+  wheelCtx.lineWidth = 2;
+  wheelCtx.stroke();
+}
+
+drawWheel();
+
+spinBtn.addEventListener('click', () => {
+  if (spinning) return;
+  spinning = true;
+  spinBtn.disabled = true;
+  wheelResult.classList.remove('visible');
+
+  const extraSpins = 5 + Math.random() * 3;
+  const targetAngle = currentAngle + extraSpins * 2 * Math.PI;
+
+  const duration = 4000;
+  const start = performance.now();
+  const startAngle = currentAngle;
+
+  function animateSpin(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
+    currentAngle = startAngle + (targetAngle - startAngle) * ease;
+    drawWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animateSpin);
+    } else {
+      spinning = false;
+      spinBtn.disabled = false;
+      // Figure out which slice is at the top (pointer)
+      const sliceAngle = (2 * Math.PI) / copingOptions.length;
+      const normalized = ((2 * Math.PI - (currentAngle % (2 * Math.PI))) + (2 * Math.PI)) % (2 * Math.PI);
+      // Pointer is at top (270deg / -90deg / 3π/2)
+      const pointerAngle = (normalized + 3 * Math.PI / 2) % (2 * Math.PI);
+      const idx = Math.floor(pointerAngle / sliceAngle) % copingOptions.length;
+
+      wheelResult.textContent = copingOptions[idx].label.replace('\n', ' ');
+      wheelResult.classList.add('visible');
+      launchConfetti(30);
+    }
+  }
+  requestAnimationFrame(animateSpin);
+});
+
+// ============================================
+// DAILY FORTUNE
+// ============================================
+const fortuneCookie = document.getElementById('fortune-cookie');
+const fortuneSlip = document.getElementById('fortune-slip');
+const fortuneNew = document.getElementById('fortune-new');
+let lastFortuneIdx = -1;
+
+function crackFortune() {
+  fortuneCookie.classList.add('cracked');
+
+  let idx;
+  do { idx = Math.floor(Math.random() * fortunes.length); } while (idx === lastFortuneIdx);
+  lastFortuneIdx = idx;
+
+  setTimeout(() => {
+    fortuneSlip.textContent = fortunes[idx];
+    fortuneSlip.classList.add('visible');
+    fortuneNew.style.display = 'inline-block';
+  }, 500);
+}
+
+fortuneCookie.addEventListener('click', crackFortune);
+
+fortuneNew.addEventListener('click', () => {
+  fortuneCookie.classList.remove('cracked');
+  fortuneSlip.classList.remove('visible');
+  setTimeout(crackFortune, 300);
+});
+
+// ============================================
+// SCROLL ANIMATIONS
+// ============================================
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.2 });
+
+fadeEls.forEach(el => observer.observe(el));
+
+// Smooth scroll for nav links
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
